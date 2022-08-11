@@ -10,6 +10,7 @@ let Box = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 30px;
 `;
 
 const Logo = styled.div`
@@ -21,7 +22,7 @@ function Header() {
   return (
     <>
       <Box>
-        <Logo onClick={() => navigate("/")}>로고임</Logo>
+        <Logo onClick={() => navigate("/")}>What The Hot Place</Logo>
       </Box>
     </>
   );
