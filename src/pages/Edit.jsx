@@ -1,18 +1,48 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
 const Edit = () => {
+  //이미지 문자화 및 다시 이미지화 작업
+  const encodeFileToBase64 = async (a) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(a);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImgesrc(reader.result);
+        setEditDetail({
+          ...editDetail,
+          imgFile: reader.result,
+        });
+        resolve();
+      };
+    });
+  };
+
+  //이미지 미리보기
+  let [imgesrc, setImgesrc] = useState("");
+
+  const navigate = useNavigate();
+
   const Detail = useSelector((state) => state.counter.detail);
 
   const [editDetail, setEditDetail] = useState({
     title: Detail.title,
+    body: Detail.body,
+    imgFile: "",
   });
 
-  const fetchDetail = async (id) => {
-    const { data } = await axios.get(`http://localhost:3001/list/${id}`);
+  const params = useParams();
+  const [DetailId, setDetailId] = useState({
+    id: params.id,
+  });
+
+  const fetchDetail = async () => {
+    const { data } = await axios.get(
+      `http://localhost:3001/list/${DetailId.id}`
+    );
     setEditDetail(data); // 서버로부터 fetching한 데이터를 useState의 state로 set 합니다.
   };
 
@@ -22,8 +52,15 @@ const Edit = () => {
   }, []);
 
   // 수정버튼 이벤트 핸들러 추가 👇
-  const onClickEditButtonHandler = (id, edit) => {
-    axios.patch(`http://localhost:3001/list/${id}`, edit);
+  const onClickEditButtonHandler = async (edit) => {
+    if (editDetail.title.length < 10) {
+      alert("제목을 10글자 이상 작성해 주세요!");
+      return;
+    } else {
+      await axios.patch(`http://localhost:3001/list/${editDetail.id}`, edit);
+      navigate(`/detail/${editDetail.id}`);
+      fetchDetail();
+    }
   };
 
   return (
@@ -39,34 +76,52 @@ const Edit = () => {
                 value={editDetail.title}
                 onChange={(ev) => {
                   setEditDetail({
+                    ...editDetail,
                     title: ev.target.value,
                   });
                 }}
               ></TitleInput>{" "}
             </Title>
-            <Image value={Detail.img}>
+            <Image>
               IMAGE
               <img
                 style={{ width: "450px", height: "200px" }}
-                src={Detail.imgFile}
+                src={editDetail.imgFile}
+              />
+              <input
+                name="image"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const { value } = encodeFileToBase64(e.target.files[0]);
+                  setEditDetail({
+                    ...editDetail,
+                    imgFile: value,
+                  });
+                }}
               />
             </Image>
             <Content>
-              REVIEW<ContentInput value={Detail.body}></ContentInput>{" "}
+              REVIEW
+              <ContentInput
+                value={editDetail.body}
+                onChange={(ev) => {
+                  setEditDetail({
+                    ...editDetail,
+                    body: ev.target.value,
+                  });
+                }}
+              ></ContentInput>{" "}
             </Content>
           </ContentBox>
           <Btn>
-            <Link to={`/detail/${Detail.id}`}>
+            <Link to={`/detail/${editDetail.id}`}>
               <CompleteBtn> 취소 </CompleteBtn>
             </Link>
-            <Link to={`/detail/${Detail.id}`}>
-              <CancelBtn
-                onClick={() => onClickEditButtonHandler(Detail.id, editDetail)}
-              >
-                {" "}
-                수정완료{" "}
-              </CancelBtn>
-            </Link>
+            <CancelBtn onClick={() => onClickEditButtonHandler(editDetail)}>
+              {" "}
+              수정완료{" "}
+            </CancelBtn>
           </Btn>
         </Box>
       </Base>
@@ -75,6 +130,7 @@ const Edit = () => {
 };
 
 export default Edit;
+
 const BarTxt1 = styled.h1`
   color: #ff0068;
   margin: 8px;
@@ -97,6 +153,9 @@ const ContentBox = styled.div`
   align-items: center;
   flex-direction: column;
   text-align: left;
+  img {
+    max-width: 100%;
+  }
 `;
 const Base = styled.div`
   background-color: black;
@@ -133,16 +192,6 @@ const TitleInput = styled.input`
 const Image = styled.div`
   font-size: medium;
   color: #ff0068;
-`;
-const ImageInput = styled.input`
-  border: 1px solid rgb(160, 160, 160);
-  width: 400px;
-  height: 40px;
-  border-radius: 4px;
-  padding-left: 10px;
-  margin-bottom: 25px;
-  margin-top: 4px;
-  color: white;
 `;
 const Content = styled.div`
   font-size: medium;

@@ -143,7 +143,7 @@ const Comments = () => {
     }
   };
   // if (window.confirm(`댓글을 수정하시겠습니까?`)) {
-  //   onEdit(counts.Id, localContent); //"예" 누르면 수정완료
+  //   onEdit(counts.id, localContent); //"예" 누르면 수정완료
   //   toggleIsEdit(); //수정폼 닫기
   // }
 
@@ -176,7 +176,7 @@ const Comments = () => {
           <span>
             {isEdit ? (
               <>
-                <button onClick={handleQuitEdit}>수정 취소</button>
+                {/* <button onClick={handleQuitEdit}>수정 취소</button> */}
                 <button onClick={handleEdit}>수정 완료</button>
               </>
             ) : (
