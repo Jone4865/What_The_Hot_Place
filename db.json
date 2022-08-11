@@ -11,11 +11,6 @@
       "postId": 1
     },
     {
-      "id": "7f6a69a4-8a83-48ea-9863-cd2ce784e6c7",
-      "ment": "sssssssssssssssssssssssssss",
-      "postId": 2
-    },
-    {
       "id": "ab8af649-d3c0-4539-a19d-2a18dfc39ab1",
       "ment": "ssssssssssssssssssssssssssssssssssssssss",
       "postId": 2
@@ -144,6 +139,11 @@
       "id": "d98127fb-d62d-4535-9606-f44c5b7bab8a",
       "ment": "ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ",
       "postId": 6
+    },
+    {
+      "id": "b3121aa9-8011-484e-babc-d6ad3360a258",
+      "ment": "dwadwadawdawdwdwa",
+      "postId": 4
     }
   ],
   "profile": {
